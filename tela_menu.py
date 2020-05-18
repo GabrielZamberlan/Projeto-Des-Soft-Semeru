@@ -39,4 +39,4 @@ def menu(window):
         pygame.display.update()  # Mostra o novo frame para o jogador
 
     # ===== Finalização =====
-    return state
+    return estado
