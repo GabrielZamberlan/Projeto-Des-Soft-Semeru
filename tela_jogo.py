@@ -1,16 +1,16 @@
 import pygame
 pygame.init()
 def jogo(window):
-    game = True
+    jogo = True
 
     # ===== Loop principal =====
-    while game:
+    while jogo:
         # ----- Trata eventos
         for event in pygame.event.get():
             # ----- Verifica consequências
             if event.type == pygame.QUIT:
-                game = False
-                state = 'cabo'
+                jogo = False
+                estado = 'cabo'
 
         # ----- Gera saídas
         window.fill((0, 0, 0))  # Preenche com a cor branca
@@ -20,4 +20,4 @@ def jogo(window):
 
     # ===== Finalização =====
     pygame.quit()  # Função do PyGame que finaliza os recursos utilizados
-    return state
+    return estado
