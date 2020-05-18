@@ -9,7 +9,7 @@ def menu(window):
     window = pygame.display.set_mode((WIDTH, HEIGHT))
 
     # ----- Inicia estruturas de dados
-    game = True
+    rodando = True
 
     # ----- Inicia assets
     image = pygame.image.load('assets/img/imagem_menu.png').convert()
@@ -17,18 +17,19 @@ def menu(window):
     text = font.render('Semeru', True, (0, 0, 0))
 
     # ===== Loop principal =====
-    while game:
+    while rodando:
         # ----- Trata eventos
         for event in pygame.event.get():
             # ----- Verifica consequências
         
             # Verifica se foi fechado.
             if event.type == pygame.QUIT:
-                state = 'sair'
+                estado = 'sair'
+                rodando = False
             if event.type == pygame.KEYUP:
-                state = 'jogo'
-            if event.type == pygame.QUIT:
-                game = False
+                estado = 'jogo'
+                rodando = False
+
 
         # ----- Gera saídas
         window.blit(image, (0, 0))

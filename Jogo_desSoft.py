@@ -10,14 +10,14 @@ HEIGHT = 536
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Semeru')
 
-state = 'menu'
-while state != 'sair':
-    if state == 'menu':
-        state = menu(window)
-    elif state == 'jogo':
-        state = jogo(window)
+estado = 'menu'
+while estado != 'sair':
+    if estado == 'menu':
+        estado = menu(window)
+    elif estado == 'jogo':
+        estado = jogo(window)
     else:
-        state = 'sair'
+        estado = 'sair'
 
 # ===== Finalização =====
 pygame.quit()  # Função do PyGame que finaliza os recursos utilizados
