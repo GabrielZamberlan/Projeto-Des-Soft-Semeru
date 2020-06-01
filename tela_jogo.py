@@ -47,6 +47,19 @@ def jogo(window):
             if event.type == pygame.QUIT:
                 jogo = False
                 estado = 'cabo'
+            if event.type == pygame.KEYDOWN:
+            # Dependendo da tecla, altera a velocidade.
+                if event.key == pygame.K_LEFT:
+                    player.speedx -= 8
+                if event.key == pygame.K_RIGHT:
+                    player.speedx += 8
+            # Verifica se soltou alguma tecla.
+            if event.type == pygame.KEYUP:
+                # Dependendo da tecla, altera a velocidade.
+                if event.key == pygame.K_LEFT:
+                    player.speedx += 8
+                if event.key == pygame.K_RIGHT:
+                    player.speedx -= 8
         all_sprites.update()
 
         # ----- Gera saídas
