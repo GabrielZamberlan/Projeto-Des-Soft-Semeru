@@ -4,7 +4,6 @@ WIDTH = 1000
 HEIGHT = 536
 def jogo(window):
     jump=False
-    jumpcount=10
     personagem_width = 50
     personagem_hight = 60
     mable_img = pygame.image.load('assets/img/personagem_sprite.png').convert_alpha()
@@ -33,8 +32,7 @@ def jogo(window):
                 self.rect.right = WIDTH
             if self.rect.left < 0:
                 self.rect.left = 0
-            if self.rect.up
-    jogo = True
+    jogorodando = True
     clock = pygame.time.Clock()
     FPS = 30
  
@@ -43,13 +41,13 @@ def jogo(window):
     player = mable(mable_img)
     all_sprites.add(player)
     # ===== Loop principal =====
-    while jogo:
+    while jogorodando:
         clock.tick(FPS)
         # ----- Trata eventos
         for event in pygame.event.get():
             # ----- Verifica consequências
             if event.type == pygame.QUIT:
-                jogo = False
+                jogorodando = False
                 estado = 'cabo'
             if event.type == pygame.KEYDOWN:
             # Dependendo da tecla, altera a velocidade.
@@ -69,7 +67,9 @@ def jogo(window):
                         jump=True
                 else:
                     player.speedy += 3
-                    i
+                    if player.y > 100:
+                        player.speedy -= 3
+
         all_sprites.update()
  
         # ----- Gera saídas
