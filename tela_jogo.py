@@ -3,38 +3,41 @@ pygame.init()
 WIDTH = 1000
 HEIGHT = 536
 def jogo(window):
+    jump=False
+    jumpcount=10
     personagem_width = 50
     personagem_hight = 60
     mable_img = pygame.image.load('assets/img/personagem_sprite.png').convert_alpha()
     mable_img = pygame.transform.scale(mable_img, (personagem_width, personagem_hight))
-    Jump=False
-    JumpCount=10
+ 
     # ----- Inicia estruturas de dados
     # Definindo os novos tipos
     class mable(pygame.sprite.Sprite):
         def __init__(self, img):
             # Construtor da classe mãe (Sprite).
             pygame.sprite.Sprite.__init__(self)
-
+ 
             self.image = img
             self.rect = self.image.get_rect()
             self.rect.centerx = WIDTH / 2
             self.rect.bottom = HEIGHT - 10
             self.speedx = 0
-
+            self.speedy = 0
         def update(self):
-            # Atualização da posição da nave
+            # Atualização da posição da personagem
             self.rect.x += self.speedx
-
+            self.rect.y += self.speedy
+ 
             # Mantem dentro da tela
             if self.rect.right > WIDTH:
                 self.rect.right = WIDTH
             if self.rect.left < 0:
                 self.rect.left = 0
+            if self.rect.up
     jogo = True
     clock = pygame.time.Clock()
     FPS = 30
-
+ 
     all_sprites = pygame.sprite.Group()
     # Criando o jogador
     player = mable(mable_img)
@@ -61,28 +64,21 @@ def jogo(window):
                     player.speedx += 8
                 if event.key == pygame.K_RIGHT:
                     player.speedx -= 8
-                if Jump==False:
-                    if event.type == pygame.K_SPACE:
-                        Jump=True
+                if jump==False:
+                    if event.key == pygame.K_SPACE:
+                        jump=True
                 else:
-                    if JumpCount>=-10:
-                        neg= 1
-                        if JumpCount<0:
-                            neg=-1
-                        y-=(JumpCount**2)*0.5* neg
-                        JumpCount-=1
-                    else:
-                        Jump=False
-                        JumpCount=10
+                    player.speedy += 3
+                    i
         all_sprites.update()
-
+ 
         # ----- Gera saídas
         window.fill((0, 0, 0))  # Preenche com a cor branca
         all_sprites.draw(window)
-
+ 
         # ----- Atualiza estado do jogo
         pygame.display.update()  # Mostra o novo frame para o jogador
-
+ 
     # ===== Finalização =====
     pygame.quit()  # Função do PyGame que finaliza os recursos utilizados
     return estado
