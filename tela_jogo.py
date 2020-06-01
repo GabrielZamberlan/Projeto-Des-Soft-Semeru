@@ -2,14 +2,13 @@ import pygame
 pygame.init()
 WIDTH = 1000
 HEIGHT = 536
-Jump=False
-JumpCount=10
 def jogo(window):
     personagem_width = 50
     personagem_hight = 60
     mable_img = pygame.image.load('assets/img/personagem_sprite.png').convert_alpha()
     mable_img = pygame.transform.scale(mable_img, (personagem_width, personagem_hight))
-
+    Jump=False
+    JumpCount=10
     # ----- Inicia estruturas de dados
     # Definindo os novos tipos
     class mable(pygame.sprite.Sprite):
