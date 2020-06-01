@@ -2,6 +2,8 @@ import pygame
 pygame.init()
 WIDTH = 1000
 HEIGHT = 536
+Jump=False
+JumpCount=10
 def jogo(window):
     personagem_width = 50
     personagem_hight = 60
@@ -60,6 +62,19 @@ def jogo(window):
                     player.speedx += 8
                 if event.key == pygame.K_RIGHT:
                     player.speedx -= 8
+                if Jump==False:
+                    if event.type == pygame.K_SPACE:
+                        Jump=True
+                else:
+                    if JumpCount>=-10:
+                        neg= 1
+                        if JumpCount<0:
+                            neg=-1
+                        y-=(JumpCount**2)*0.5* neg
+                        JumpCount-=1
+                    else:
+                        Jump=False
+                        JumpCount=10
         all_sprites.update()
 
         # ----- Gera saídas
