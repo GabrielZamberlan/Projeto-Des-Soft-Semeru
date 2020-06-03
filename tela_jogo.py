@@ -1,44 +1,145 @@
 import pygame
+from os import path
 pygame.init()
 WIDTH = 1000
-HEIGHT = 536
+HEIGHT = 520
+
 def jogo(window):
-    jump=False
-    personagem_width = 50
-    personagem_hight = 60
-    mable_img = pygame.image.load('assets/img/personagem_sprite.png').convert_alpha()
-    mable_img = pygame.transform.scale(mable_img, (personagem_width, personagem_hight))
+    img_dir = path.join(path.dirname(__file__), 'img')
+    TILE_SIZE = 40
+    PLAYER_WIDTH = TILE_SIZE
+    PLAYER_HEIGHT = int(TILE_SIZE*1.5)
+    GRAVITY = 5
+    JUMP_SIZE = TILE_SIZE
+    SPEED_X = 5
+    #vazio = 0
+    #bloco = 1
+    #plataforma = 2
+    MAP = [
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ]
+
+
  
     # ----- Inicia estruturas de dados
     # Definindo os novos tipos
+    class Tile(pygame.sprite.Sprite):
+
+        # Construtor da classe.
+        def __init__(self, tile_img, row, column):
+            pygame.sprite.Sprite.__init__(self)
+
+            tile_img = pygame.transform.scale(tile_img, (TILE_SIZE, TILE_SIZE))
+
+
+            self.image = tile_img
+            self.rect = self.image.get_rect()
+
+            self.rect.x = TILE_SIZE * column
+            self.rect.y = TILE_SIZE * row
+
+
     class mable(pygame.sprite.Sprite):
-        def __init__(self, img):
+
+        def __init__(self, player_img, row, column, platforms, blocks):
             # Construtor da classe mãe (Sprite).
             pygame.sprite.Sprite.__init__(self)
- 
-            self.image = img
+            self.state = "parado"
+            player_img = pygame.transform.scale(player_img, (PLAYER_WIDTH, PLAYER_HEIGHT))
+            self.image = player_img
             self.rect = self.image.get_rect()
-            self.rect.centerx = WIDTH / 2
-            self.rect.bottom = HEIGHT - 10
+            self.blocks = blocks
+            self.rect.x = column * TILE_SIZE
+            self.rect.bottom = row * TILE_SIZE
             self.speedx = 0
             self.speedy = 0
+            self.highest_y = self.rect.bottom
         def update(self):
-            # Atualização da posição da personagem
-            self.rect.x += self.speedx
+            self.rect.y += GRAVITY
+            if self.speedy > 0:
+                self.state = "caindo"
+
             self.rect.y += self.speedy
- 
-            # Mantem dentro da tela
+            if self.state != "caindo":
+                self.highest_y = self.rect.bottom
+            
+            collision = pygame.sprite.spritecollide(self, self.blocks, False)
+            for collision in collision:
+                if self.speedy > 0:
+                    self.rect.bottom = collision.rect.top
+                    self.speedy = 0
+                    self.state = "parado"
+                elif self.speedy < 0:
+                    self.rect.top = collision.rect.bottom
+                    self.speedy = 0
+                    self.state = "parado"
+            if self.speedy > 0:  
+                        collisions = pygame.sprite.spritecollide(self, self.platforms, False)
+                        for platform in collisions:
+                            if self.highest_y <= platform.rect.top:
+                                self.rect.bottom = platform.rect.top
+                                self.highest_y = self.rect.bottom
+                                self.speedy = 0
+                                self.state = STILL
+            
+            self.rect.x += self.speedx
+            
             if self.rect.right > WIDTH:
-                self.rect.right = WIDTH
+                self.rect.right = WIDTH - 1
             if self.rect.left < 0:
                 self.rect.left = 0
+            collisions = pygame.sprite.spritecollide(self, self.blocks, False)
+            for collision in collisions:
+                if self.speedx > 0:
+                    self.rect.right = collision.rect.left
+                elif self.speedx < 0:
+                    self.rect.left = collision.rect.right
+
+        def jump(self):
+            if self.state == "parado":
+                self.speedy -= JUMP_SIZE
+                self.state = "pulando"
+    def load_assets(img_dir):
+        assets = {}
+        player_img = pygame.image.load('assets/img/personagem_sprite.png').convert_alpha()
+        assets['player_img'] = pygame.transform.scale(player_img, (PLAYER_WIDTH, PLAYER_HEIGHT))
+        assets[1] = pygame.image.load('assets/img/tile-block.png').convert()
+        assets[2] = pygame.image.load('assets/img/tile-wood.png').convert()
+        return assets
+    assets = load_assets(img_dir)
     jogorodando = True
     clock = pygame.time.Clock()
     FPS = 30
- 
     all_sprites = pygame.sprite.Group()
+    platforms = pygame.sprite.Group()
+    blocks = pygame.sprite.Group()
+    player = mable(assets['player_img'], 5, 2, platforms, blocks)
+
+    # Cria tiles de acordo com o mapa
+    for row in range(len(MAP)):
+        for column in range(len(MAP[row])):
+            tile_type = MAP[row][column]
+            if tile_type != 0:
+                tile = Tile(assets[tile_type], row, column)
+                all_sprites.add(tile)
+                if tile_type == 1:
+                    blocks.add(tile)
+                elif tile_type == 2:
+                    platforms.add(tile)
+    
     # Criando o jogador
-    player = mable(mable_img)
     all_sprites.add(player)
     # ===== Loop principal =====
     while jogorodando:
@@ -50,26 +151,21 @@ def jogo(window):
                 jogorodando = False
                 estado = 'cabo'
             if event.type == pygame.KEYDOWN:
-            # Dependendo da tecla, altera a velocidade.
+                # Dependendo da tecla, altera o estado do jogador.
                 if event.key == pygame.K_LEFT:
-                    player.speedx -= 8
-                if event.key == pygame.K_RIGHT:
-                    player.speedx += 8
+                    player.speedx -= SPEED_X
+                elif event.key == pygame.K_RIGHT:
+                    player.speedx += SPEED_X
+                elif event.key == pygame.K_UP or event.key == pygame.K_SPACE:
+                    player.jump()
+
             # Verifica se soltou alguma tecla.
             if event.type == pygame.KEYUP:
-                # Dependendo da tecla, altera a velocidade.
+                # Dependendo da tecla, altera o estado do jogador.
                 if event.key == pygame.K_LEFT:
-                    player.speedx += 8
-                if event.key == pygame.K_RIGHT:
-                    player.speedx -= 8
-                if jump==False:
-                    if event.key == pygame.K_SPACE:
-                        jump=True
-                else:
-                    player.speedy += 3
-                    if player.y > 100:
-                        player.speedy -= 3
-
+                    player.speedx += SPEED_X
+                elif event.key == pygame.K_RIGHT:
+                    player.speedx -= SPEED_X
         all_sprites.update()
  
         # ----- Gera saídas

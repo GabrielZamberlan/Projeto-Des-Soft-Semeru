@@ -3,9 +3,10 @@ from tela_menu import menu
 from tela_jogo import jogo
 
 pygame.init()
+pygame.mixer.init()
 
 WIDTH = 1000
-HEIGHT = 536
+HEIGHT = 520
 # ----- Gera tela principal
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Semeru')

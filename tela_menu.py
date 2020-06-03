@@ -5,7 +5,7 @@ pygame.init()
 # ----- Gera tela principal
 def menu(window):
     WIDTH = 1000
-    HEIGHT = 536
+    HEIGHT = 520
     window = pygame.display.set_mode((WIDTH, HEIGHT))
 
     # ----- Inicia estruturas de dados
