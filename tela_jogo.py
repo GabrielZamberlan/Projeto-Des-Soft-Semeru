@@ -16,25 +16,20 @@ def jogo(window):
     #bloco = 1
     #plataforma = 2
     MAP = [
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     ]
-
-
- 
-    # ----- Inicia estruturas de dados
-    # Definindo os novos tipos
     class Tile(pygame.sprite.Sprite):
 
         # Construtor da classe.
@@ -64,19 +59,20 @@ def jogo(window):
             self.rect.x = column * TILE_SIZE
             self.rect.bottom = row * TILE_SIZE
             self.speedx = 0
-            self.speedy = 0
+            self.speedy = 5
             self.highest_y = self.rect.bottom
+            self.platforms = platforms
         def update(self):
-            self.rect.y += GRAVITY
             if self.speedy > 0:
                 self.state = "caindo"
-
+            if self.state == "caindo":
+                self.speedy = GRAVITY
             self.rect.y += self.speedy
             if self.state != "caindo":
                 self.highest_y = self.rect.bottom
             
-            collision = pygame.sprite.spritecollide(self, self.blocks, False)
-            for collision in collision:
+            collisions = pygame.sprite.spritecollide(self, self.blocks, False)
+            for collision in collisions:
                 if self.speedy > 0:
                     self.rect.bottom = collision.rect.top
                     self.speedy = 0
@@ -86,13 +82,13 @@ def jogo(window):
                     self.speedy = 0
                     self.state = "parado"
             if self.speedy > 0:  
-                        collisions = pygame.sprite.spritecollide(self, self.platforms, False)
-                        for platform in collisions:
-                            if self.highest_y <= platform.rect.top:
-                                self.rect.bottom = platform.rect.top
-                                self.highest_y = self.rect.bottom
-                                self.speedy = 0
-                                self.state = STILL
+                collisions = pygame.sprite.spritecollide(self, self.platforms, False)
+                for platform in collisions:
+                    if self.highest_y <= platform.rect.top:
+                        self.rect.bottom = platform.rect.top
+                        self.highest_y = self.rect.bottom
+                        self.speedy = 0
+                        self.state = "parado"
             
             self.rect.x += self.speedx
             
@@ -113,8 +109,7 @@ def jogo(window):
                 self.state = "pulando"
     def load_assets(img_dir):
         assets = {}
-        player_img = pygame.image.load('assets/img/personagem_sprite.png').convert_alpha()
-        assets['player_img'] = pygame.transform.scale(player_img, (PLAYER_WIDTH, PLAYER_HEIGHT))
+        assets[0] = pygame.image.load('assets/img/personagem_sprite.png').convert_alpha()
         assets[1] = pygame.image.load('assets/img/tile-block.png').convert()
         assets[2] = pygame.image.load('assets/img/tile-wood.png').convert()
         return assets
@@ -125,9 +120,8 @@ def jogo(window):
     all_sprites = pygame.sprite.Group()
     platforms = pygame.sprite.Group()
     blocks = pygame.sprite.Group()
-    player = mable(assets['player_img'], 5, 2, platforms, blocks)
-
-    # Cria tiles de acordo com o mapa
+    player = mable(assets[0], 5, 2, platforms, blocks)
+    
     for row in range(len(MAP)):
         for column in range(len(MAP[row])):
             tile_type = MAP[row][column]
@@ -138,10 +132,7 @@ def jogo(window):
                     blocks.add(tile)
                 elif tile_type == 2:
                     platforms.add(tile)
-    
-    # Criando o jogador
     all_sprites.add(player)
-    # ===== Loop principal =====
     while jogorodando:
         clock.tick(FPS)
         # ----- Trata eventos
@@ -166,15 +157,12 @@ def jogo(window):
                     player.speedx += SPEED_X
                 elif event.key == pygame.K_RIGHT:
                     player.speedx -= SPEED_X
-        all_sprites.update()
- 
-        # ----- Gera saídas
-        window.fill((0, 0, 0))  # Preenche com a cor branca
+        
+        window.fill((0, 0, 0))
         all_sprites.draw(window)
+        all_sprites.update()
+        pygame.display.flip()
+        pygame.display.update() 
  
-        # ----- Atualiza estado do jogo
-        pygame.display.update()  # Mostra o novo frame para o jogador
- 
-    # ===== Finalização =====
-    pygame.quit()  # Função do PyGame que finaliza os recursos utilizados
+    pygame.quit() 
     return estado
