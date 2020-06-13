@@ -159,10 +159,38 @@ def game_screen(screen):
         screen.blit(assets['BACKGROUND_IMG'], (0, 0))
         all_sprites.draw(screen)
         pygame.display.flip()
+    return state
+def menu(window):
+    WIDTH = 1000
+    HEIGHT = 520
+    window = pygame.display.set_mode((WIDTH, HEIGHT))
+    rodando = True
+    image = pygame.image.load('img/imagem_menu.png').convert()
+    font = pygame.font.SysFont(None, 100)
+    text = font.render('Semeru', True, (0, 0, 0))
+    while rodando:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                state = 'quit'
+                rodando = False
+            if event.type == pygame.KEYUP:
+                state = 'game'
+                rodando = False
+
+        window.blit(image, (0, 0))
+        window.blit(text, (150, 100))
+        pygame.display.update() 
+
+    return state
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption(TITULO)
-try:
-    game_screen(screen)
-finally:
-    pygame.quit()
+state = 'menu'
+while state != 'quit':
+    if state == 'menu':
+        state = menu(screen)
+    elif state == 'game':
+        state = game_screen(screen)
+    else:
+        state = 'quit'
+pygame.quit()
