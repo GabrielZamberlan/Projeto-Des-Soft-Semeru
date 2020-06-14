@@ -220,7 +220,7 @@ def game_screen2(screen):
     platforms = pygame.sprite.Group()
     blocks = pygame.sprite.Group()
     lava = pygame.sprite.Group()
-    player = Player(assets[PLAYER_IMG], 12, 2, platforms, blocks, lava)
+    player = Player(assets[PLAYER_IMG], 12, 2, platforms, blocks, lava,assets['PLAYER_LEFT'])
     for row in range(len(MAP2)):
         for column in range(len(MAP2[row])):
             tile_type = MAP2[row][column]
@@ -243,8 +243,12 @@ def game_screen2(screen):
                 game = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
+                    Right=False
+                    Left=True
                     player.speedx -= SPEED_X
                 elif event.key == pygame.K_RIGHT:
+                    Left=False
+                    Right=True
                     player.speedx += SPEED_X
                 elif event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                     player.jump()
