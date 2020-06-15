@@ -15,6 +15,8 @@ PLAYER_IMG = 'player_img'
 GRAVITY = 5
 JUMP_SIZE = TILE_SIZE
 
+
+
 SPEED_X = 10
 #define os tipos de tiles do jogo
 BLOCK = 0
@@ -55,6 +57,7 @@ MAP2 = [
 MAP3 = [
     [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
     [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+<<<<<<< HEAD
     [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
     [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
     [EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
@@ -67,6 +70,14 @@ MAP3 = [
     [BLOCK, BLOCK, BLOCK, BLOCK, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK],
     [BLOCK, BLOCK, BLOCK, BLOCK, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK],
     [BLOCK, BLOCK, BLOCK, BLOCK, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, LAVA, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK],
+=======
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, PLATF, EMPTY],
+    [BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK],
+    [BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK],
+    [BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK],
+>>>>>>> 57bcd21db8560ef84d03a4b72f522c193fb34e58
 ]
 STILL = 0
 JUMPING = 1
@@ -82,10 +93,12 @@ class Tile(pygame.sprite.Sprite):
         self.rect.y = TILE_SIZE * row
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, player_img, row, column, platforms, blocks, lava):
+    def __init__(self, player_img, row, column, platforms, blocks, lava, player_left):
         pygame.sprite.Sprite.__init__(self)
         self.state = STILL
-
+        Right=True
+        Left=False
+        player_left = pygame.transform.scale(player_left, (PLAYER_WIDTH, PLAYER_HEIGHT))
         player_img = pygame.transform.scale(player_img, (PLAYER_WIDTH, PLAYER_HEIGHT))
         self.image = player_img
         self.rect = self.image.get_rect()
@@ -101,7 +114,15 @@ class Player(pygame.sprite.Sprite):
         self.fase2 = False
         self.fase3 = False
         self.vivo = True
-    def update(self):
+    def update(self,assets,Right,Left):
+        player_img=assets[PLAYER_IMG]
+        player_left=assets['PLAYER_LEFT']
+        player_left = pygame.transform.scale(player_left, (PLAYER_WIDTH, PLAYER_HEIGHT))
+        player_img = pygame.transform.scale(player_img, (PLAYER_WIDTH, PLAYER_HEIGHT))
+        if Right==True and Left==False:
+            self.image=player_img
+        else:
+            self.image=player_left
         self.speedy += GRAVITY
         if self.speedy > 0:
             self.state = FALLING
@@ -158,17 +179,21 @@ def load_assets(img_dir):
     assets[STAR] = pygame.image.load(path.join(img_dir, 'estrela.jpg')).convert_alpha()
     assets[LAVA] = pygame.image.load(path.join(img_dir,'lava.png')).convert()
     assets['BACKGROUND_IMG'] = pygame.image.load(path.join(img_dir, 'FUNDO MONTANHAS.png')).convert()
+    assets['PLAYER_LEFT'] = pygame.image.load(path.join(img_dir, 'mable_left.png')).convert_alpha()
+
     return assets
 
 
 def game_screen1(screen):
+    Right=True
+    Left=False
     clock = pygame.time.Clock()
     assets = load_assets(img_dir)
     all_sprites = pygame.sprite.Group()
     platforms = pygame.sprite.Group()
     blocks = pygame.sprite.Group()
     lava = pygame.sprite.Group()
-    player = Player(assets[PLAYER_IMG], 12, 2, platforms, blocks, lava)
+    player = Player(assets[PLAYER_IMG], 12, 2, platforms, blocks, lava, assets['PLAYER_LEFT'])
     for row in range(len(MAP1)):
         for column in range(len(MAP1[row])):
             tile_type = MAP1[row][column]
@@ -191,8 +216,12 @@ def game_screen1(screen):
                 state = 'quit'
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
+                    Right=False
+                    Left=True
                     player.speedx -= SPEED_X
                 elif event.key == pygame.K_RIGHT:
+                    Left=False
+                    Right=True
                     player.speedx += SPEED_X
                 elif event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                     player.jump()
@@ -206,19 +235,21 @@ def game_screen1(screen):
                 state = 'quit'
             if player.fase1 == True:
                 state = 'game2'
-        all_sprites.update()
+        all_sprites.update(assets,Right,Left)
         screen.blit(assets['BACKGROUND_IMG'], (0, 0))
         all_sprites.draw(screen)
         pygame.display.flip()
     return state
 def game_screen2(screen):
+    Right=True
+    Left=False
     clock = pygame.time.Clock()
     assets = load_assets(img_dir)
     all_sprites = pygame.sprite.Group()
     platforms = pygame.sprite.Group()
     blocks = pygame.sprite.Group()
     lava = pygame.sprite.Group()
-    player = Player(assets[PLAYER_IMG], 12, 2, platforms, blocks, lava)
+    player = Player(assets[PLAYER_IMG], 12, 2, platforms, blocks, lava,assets['PLAYER_LEFT'])
     for row in range(len(MAP2)):
         for column in range(len(MAP2[row])):
             tile_type = MAP2[row][column]
@@ -241,8 +272,12 @@ def game_screen2(screen):
                 game = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
+                    Right=False
+                    Left=True
                     player.speedx -= SPEED_X
                 elif event.key == pygame.K_RIGHT:
+                    Left=False
+                    Right=True
                     player.speedx += SPEED_X
                 elif event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                     player.jump()
@@ -251,6 +286,7 @@ def game_screen2(screen):
                     player.speedx += SPEED_X
                 elif event.key == pygame.K_RIGHT:
                     player.speedx -= SPEED_X
+<<<<<<< HEAD
             if player.vivo == False:
                 pygame.quit()
                 state = 'quit'
@@ -307,6 +343,9 @@ def game_screen3(screen):
             if player.fase3 == True:
                 state = 'final'
         all_sprites.update()
+=======
+        all_sprites.update(assets,Right,Left)
+>>>>>>> 57bcd21db8560ef84d03a4b72f522c193fb34e58
         screen.blit(assets['BACKGROUND_IMG'], (0, 0))
         all_sprites.draw(screen)
         pygame.display.flip()
