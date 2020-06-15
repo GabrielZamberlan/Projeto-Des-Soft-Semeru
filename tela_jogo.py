@@ -282,7 +282,7 @@ def game_screen2(screen):
                 state = 'quit'
             if player.fase2 == True:
                 state = 'game3'
-        all_sprites.update()
+        all_sprites.update(assets,Right,Left)
         screen.blit(assets['BACKGROUND_IMG'], (0, 0))
         all_sprites.draw(screen)
         pygame.display.flip()
@@ -332,7 +332,7 @@ def game_screen3(screen):
                 state = 'quit'
             if player.fase3 == True:
                 state = 'final'
-        all_sprites.update()
+        all_sprites.update(assets,Right,Left)
         all_sprites.update(assets,Right,Left)
         screen.blit(assets['BACKGROUND_IMG'], (0, 0))
         all_sprites.draw(screen)
