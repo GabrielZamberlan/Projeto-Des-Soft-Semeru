@@ -10,3 +10,4 @@
 #Seta para cima ou barra de espaço para pular
 #Seta para direita para andar para direita
 #Seta para esquerda para andar para esquerda
+#Vídeo explicativo do jogo: https://www.youtube.com/watch?v=Pq0xUJjonT4
